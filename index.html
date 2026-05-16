@@ -25,41 +25,31 @@
   header h1 { font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700; letter-spacing: 0.05em; }
   header span { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); margin-left: auto; }
 
-  main { max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem; }
+  main { max-width: 680px; margin: 0 auto; padding: 3rem 1.5rem; }
 
   .hero { text-align: center; margin-bottom: 2.5rem; }
-  .hero h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 300; line-height: 1.2; margin-bottom: 0.75rem; }
+  .hero h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 300; line-height: 1.2; margin-bottom: 0.75rem; }
   .hero h2 strong { font-weight: 600; color: var(--red); }
   .hero p { font-size: 14px; color: var(--muted); line-height: 1.6; }
 
-  .search-box { display: flex; gap: 10px; margin-bottom: 1rem; }
+  .search-box { display: flex; gap: 10px; margin-bottom: 2.5rem; }
   .search-box input {
     flex: 1; background: var(--surface); border: 1px solid var(--border);
-    border-radius: 10px; padding: 13px 18px; font-size: 14px;
+    border-radius: 10px; padding: 14px 18px; font-size: 14px;
     font-family: 'DM Sans', sans-serif; color: var(--text); outline: none; transition: border-color 0.2s;
   }
   .search-box input::placeholder { color: var(--muted); }
   .search-box input:focus { border-color: var(--red); }
   .search-box button {
     background: var(--red); color: white; border: none; border-radius: 10px;
-    padding: 13px 22px; font-size: 14px; font-weight: 600;
+    padding: 14px 24px; font-size: 14px; font-weight: 600;
     font-family: 'DM Sans', sans-serif; cursor: pointer; transition: background 0.2s, transform 0.1s; white-space: nowrap;
   }
   .search-box button:hover { background: var(--red-dark); }
   .search-box button:active { transform: scale(0.97); }
   .search-box button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 2rem; align-items: center; }
-  .filters label { font-size: 12px; color: var(--muted); }
-  .filter-btn {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
-    padding: 5px 14px; font-size: 12px; color: var(--muted); cursor: pointer;
-    transition: all 0.15s; font-family: 'DM Sans', sans-serif;
-  }
-  .filter-btn:hover { border-color: var(--red); color: var(--text); }
-  .filter-btn.active { background: var(--red); border-color: var(--red); color: white; }
-
-  #status { display: none; font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; }
+  #status { display: none; font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; text-align: center; padding: 1rem; }
   .loader {
     display: inline-block; width: 10px; height: 10px;
     border: 2px solid var(--border); border-top-color: var(--red);
@@ -72,7 +62,7 @@
     border-radius: 10px; padding: 14px 18px; font-size: 13px; color: #ff6b6b; margin-bottom: 1.5rem;
   }
 
-  .section-label {
+  .divider {
     font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted);
     letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 1rem;
     padding-bottom: 8px; border-bottom: 1px solid var(--border);
@@ -80,33 +70,25 @@
 
   .source-card {
     background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
-    padding: 1.25rem; margin-bottom: 1rem; display: flex; gap: 14px; align-items: flex-start;
+    padding: 1.25rem; margin-bottom: 2rem; display: flex; gap: 14px; align-items: flex-start;
   }
-  .source-card img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
-  .avatar-fallback {
+  .source-card img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+  .av {
     border-radius: 50%; background: var(--red);
     display: flex; align-items: center; justify-content: center;
     font-weight: 700; color: white; flex-shrink: 0;
   }
-  .card-info { flex: 1; min-width: 0; }
-  .card-info h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
-  .card-info h3 a { color: var(--text); text-decoration: none; }
-  .card-info h3 a:hover { color: var(--red); }
-  .card-meta { font-size: 12px; color: var(--muted); margin-bottom: 6px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .card-title { font-size: 15px; font-weight: 600; margin-bottom: 3px; }
+  .card-title a { color: var(--text); text-decoration: none; }
+  .card-title a:hover { color: var(--red); }
+  .card-meta { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
   .card-desc { font-size: 13px; color: #aaa; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .niche-badge {
-    display: inline-block; background: rgba(255,0,0,0.12); border: 1px solid rgba(255,0,0,0.25);
-    color: #ff6b6b; border-radius: 20px; padding: 3px 10px; font-size: 11px; margin-top: 8px;
+  .concept-box {
+    margin-top: 10px; background: var(--surface2); border-radius: 8px;
+    padding: 8px 12px; font-size: 12px; color: #ccc; line-height: 1.5;
+    border-left: 2px solid var(--red);
   }
-
-  .tabs { display: flex; gap: 4px; margin: 1.5rem 0 1rem; }
-  .tab {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
-    padding: 7px 14px; font-size: 12px; color: var(--muted); cursor: pointer;
-    transition: all 0.15s; font-family: 'DM Sans', sans-serif;
-  }
-  .tab:hover { color: var(--text); }
-  .tab.active { background: var(--surface2); border-color: #444; color: var(--text); font-weight: 500; }
+  .concept-label { font-size: 10px; color: var(--red); font-family: 'Space Mono', monospace; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 3px; }
 
   .result-card {
     background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
@@ -114,31 +96,17 @@
     display: flex; gap: 14px; align-items: flex-start;
     animation: fadeIn 0.3s ease; transition: border-color 0.2s;
   }
-  .result-card:hover { border-color: #444; }
+  .result-card:hover { border-color: #3a3a3a; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   .result-card img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
-  .result-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--red); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: white; flex-shrink: 0; }
+  .rav { width: 44px; height: 44px; border-radius: 50%; background: var(--red); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: white; flex-shrink: 0; }
   .result-info { flex: 1; min-width: 0; }
-  .result-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 3px; }
+  .result-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
   .result-top a { font-weight: 500; font-size: 14px; color: var(--text); text-decoration: none; }
   .result-top a:hover { color: var(--red); }
-  .subs-badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); }
-  .size-similar { border-color: rgba(255,200,0,0.3); color: #ffc800; }
-  .size-bigger { border-color: rgba(0,200,100,0.3); color: #00c864; }
-  .size-rising { border-color: rgba(100,150,255,0.3); color: #6496ff; }
-  .result-desc { font-size: 12px; color: #888; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 6px; }
-
-  .ai-analysis {
-    background: var(--surface2); border-radius: 8px; padding: 10px 12px;
-    font-size: 12px; color: #bbb; line-height: 1.6; margin-top: 6px;
-    border-left: 2px solid var(--red);
-  }
-  .ai-label { font-size: 10px; color: var(--red); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; font-family: 'Space Mono', monospace; }
-
-  .score-bar { height: 3px; background: var(--border); border-radius: 2px; margin-top: 6px; overflow: hidden; }
-  .score-fill { height: 100%; background: var(--red); border-radius: 2px; transition: width 0.8s ease; }
-
-  .ext-link { color: var(--muted); flex-shrink: 0; font-size: 16px; text-decoration: none; margin-top: 2px; }
+  .subs { font-size: 11px; padding: 2px 8px; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); }
+  .result-why { font-size: 12px; color: #999; line-height: 1.5; margin-top: 4px; font-style: italic; }
+  .ext-link { color: var(--muted); flex-shrink: 0; font-size: 18px; text-decoration: none; }
   .ext-link:hover { color: var(--text); }
 
   footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--muted); border-top: 1px solid var(--border); margin-top: 3rem; }
@@ -156,8 +124,8 @@
 
 <main>
   <div class="hero">
-    <h2>Nişine <strong>gerçekten</strong><br>benzer kanalları bul</h2>
-    <p>Yapay zeka ile niş analizi, abone filtresi ve benzerlik skoru</p>
+    <h2>Aynı içeriği yapan<br><strong>kanalları bul</strong></h2>
+    <p>Kanal adını gir — içerik analizi yapıp aynı konseptteki 7 kanalı bul</p>
   </div>
 
   <div class="search-box">
@@ -165,24 +133,12 @@
     <button onclick="startSearch()" id="searchBtn">Analiz Et</button>
   </div>
 
-  <div class="filters">
-    <label>Büyüklük:</label>
-    <div class="filter-btn active" data-filter="all" onclick="setFilter(this)">Tümü</div>
-    <div class="filter-btn" data-filter="similar" onclick="setFilter(this)">Benzer büyüklük</div>
-    <div class="filter-btn" data-filter="bigger" onclick="setFilter(this)">Daha büyük</div>
-    <div class="filter-btn" data-filter="rising" onclick="setFilter(this)">Yükselen</div>
-  </div>
-
   <div id="status"></div>
   <div id="error"></div>
-
   <div id="mainContent" style="display:none;">
-    <div class="section-label">Analiz Edilen Kanal</div>
+    <div class="divider">Analiz Edilen Kanal</div>
     <div id="sourceCard"></div>
-    <div class="tabs">
-      <div class="tab active" data-tab="similar" onclick="setTab(this)">Benzer Kanallar</div>
-      <div class="tab" data-tab="niche" onclick="setTab(this)">Niş Liderleri</div>
-    </div>
+    <div class="divider">Aynı Konseptteki Kanallar</div>
     <div id="resultList"></div>
   </div>
 </main>
@@ -190,28 +146,9 @@
 <footer>YouTube Data API v3 + Gemini AI ile güçlendirilmiştir</footer>
 
 <script>
-const YT_KEY = 'AIzaSyD_I0K-QSgYbk5bMXa0OjTARgUGXICD1G8';
-const GEMINI_KEY = 'AIzaSyDasZkw2jYy36e6t9c3Xeg4ZAedl_--jVE';
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_KEY;
-
-let currentFilter = 'all';
-let currentTab = 'similar';
-let allResults = { similar: [], niche: [] };
-let sourceChannel = null;
-
-function setFilter(el) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-  currentFilter = el.dataset.filter;
-  renderResults();
-}
-
-function setTab(el) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  currentTab = el.dataset.tab;
-  renderResults();
-}
+const YT_KEY  = 'AIzaSyD_I0K-QSgYbk5bMXa0OjTARgUGXICD1G8';
+const GM_KEY  = 'AIzaSyDasZkw2jYy36e6t9c3Xeg4ZAedl_--jVE';
+const GM_URL  = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GM_KEY;
 
 function setStatus(msg) {
   const el = document.getElementById('status');
@@ -224,41 +161,17 @@ function hideError() { document.getElementById('error').style.display = 'none'; 
 function fmt(n) {
   if (!n) return '—';
   n = parseInt(n);
-  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
-  if (n >= 1000) return Math.round(n/1000) + 'K';
-  return n.toString();
+  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M abone';
+  if (n >= 1000) return Math.round(n/1000) + 'K abone';
+  return n + ' abone';
 }
-function initials(name) { return (name || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2); }
-
-function sizeInfo(targetSubs) {
-  if (!sourceChannel?.statistics?.subscriberCount || !targetSubs) return { label: '', cls: '' };
-  const ratio = parseInt(targetSubs) / parseInt(sourceChannel.statistics.subscriberCount);
-  if (ratio >= 5) return { label: 'Niş lideri', cls: 'size-bigger' };
-  if (ratio <= 0.2) return { label: 'Yükselen', cls: 'size-rising' };
-  return { label: 'Benzer büyüklük', cls: 'size-similar' };
-}
-
-function filterMatch(ch) {
-  if (currentFilter === 'all') return true;
-  const s = parseInt(sourceChannel?.statistics?.subscriberCount || 0);
-  const t = parseInt(ch.statistics?.subscriberCount || 0);
-  if (!s || !t) return true;
-  const ratio = t / s;
-  if (currentFilter === 'similar') return ratio >= 0.2 && ratio <= 5;
-  if (currentFilter === 'bigger') return ratio >= 5;
-  if (currentFilter === 'rising') return ratio <= 0.2;
-  return true;
-}
-
-async function gemini(prompt) {
-  const res = await fetch(GEMINI_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-  });
-  const data = await res.json();
-  if (data.error) throw new Error(data.error.message);
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+function initials(name) { return (name||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
+function avatarHTML(url, name, size) {
+  const s = size + 'px';
+  const fs = Math.round(size * 0.32) + 'px';
+  if (url) return '<img src="' + url + '" style="width:' + s + ';height:' + s + ';border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'">' +
+    '<div class="av" style="width:' + s + ';height:' + s + ';font-size:' + fs + ';display:none;">' + initials(name) + '</div>';
+  return '<div class="av" style="width:' + s + ';height:' + s + ';font-size:' + fs + ';">' + initials(name) + '</div>';
 }
 
 async function yt(path) {
@@ -268,66 +181,27 @@ async function yt(path) {
   return data;
 }
 
+async function gemini(prompt) {
+  const res = await fetch(GM_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error('Gemini: ' + data.error.message);
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+}
+
 async function extractId(input) {
   input = input.trim();
-  if (input.startsWith('UC') && input.length > 20) return input;
-  let handle = input.startsWith('@') ? input.slice(1) : input;
+  if (/^UC[\w-]{20,}$/.test(input)) return input;
+  let handle = input;
   if (input.includes('youtube.com/@')) handle = input.split('youtube.com/@')[1].split(/[/?]/)[0];
   else if (input.includes('youtube.com/channel/')) return input.split('youtube.com/channel/')[1].split(/[/?]/)[0];
+  else if (input.startsWith('@')) handle = input.slice(1);
   const data = await yt('search?part=snippet&type=channel&q=' + encodeURIComponent(handle) + '&maxResults=1');
-  if (!data.items?.length) throw new Error('Kanal bulunamadı.');
+  if (!data.items?.length) throw new Error('Kanal bulunamadı. @ ile tekrar dene.');
   return data.items[0].snippet.channelId;
-}
-
-async function searchYT(query, excludeId) {
-  try {
-    const data = await yt('search?part=snippet&type=channel&q=' + encodeURIComponent(query) + '&maxResults=15');
-    const ids = (data.items || []).map(i => i.snippet.channelId).filter(id => id !== excludeId);
-    if (!ids.length) return [];
-    const det = await yt('channels?part=snippet,statistics&id=' + ids.slice(0,10).join(','));
-    return det.items || [];
-  } catch { return []; }
-}
-
-function renderResults() {
-  const list = document.getElementById('resultList');
-  const data = allResults[currentTab] || [];
-  const filtered = data.filter(filterMatch);
-  if (!filtered.length) {
-    list.innerHTML = '<p style="font-size:13px;color:var(--muted);padding:1rem 0;">Bu filtrede sonuç yok.</p>';
-    return;
-  }
-  list.innerHTML = filtered.map(ch => resultCardHTML(ch)).join('');
-}
-
-function resultCardHTML(ch) {
-  const name = ch.snippet.title;
-  const avatar = ch.snippet.thumbnails?.default?.url || '';
-  const subs = fmt(ch.statistics?.subscriberCount);
-  const desc = (ch.snippet.description || '').slice(0, 100);
-  const url = 'https://youtube.com/channel/' + ch.id;
-  const size = sizeInfo(ch.statistics?.subscriberCount);
-  const score = ch._score || 0;
-  const analysis = ch._analysis || '';
-
-  const avatarHTML = avatar
-    ? '<img src="' + avatar + '" alt="' + name + '" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'">'
-    : '';
-  const fallback = '<div class="result-avatar" ' + (avatar ? 'style="display:none"' : '') + '>' + initials(name) + '</div>';
-
-  return '<div class="result-card">' +
-    avatarHTML + fallback +
-    '<div class="result-info">' +
-      '<div class="result-top">' +
-        '<a href="' + url + '" target="_blank">' + name + '</a>' +
-        '<span class="subs-badge">' + subs + ' abone</span>' +
-        (size.label ? '<span class="subs-badge ' + size.cls + '">' + size.label + '</span>' : '') +
-      '</div>' +
-      (desc ? '<div class="result-desc">' + desc + '</div>' : '') +
-      (analysis ? '<div class="ai-analysis"><div class="ai-label">AI ANALİZİ · ' + score + '% uyum</div>' + analysis + '<div class="score-bar"><div class="score-fill" style="width:' + score + '%"></div></div></div>' : '') +
-    '</div>' +
-    '<a href="' + url + '" target="_blank" class="ext-link">↗</a>' +
-  '</div>';
 }
 
 async function startSearch() {
@@ -335,138 +209,154 @@ async function startSearch() {
   if (!input.trim()) return;
   hideError();
   document.getElementById('mainContent').style.display = 'none';
-  allResults = { similar: [], niche: [] };
+  document.getElementById('resultList').innerHTML = '';
 
   const btn = document.getElementById('searchBtn');
   btn.disabled = true; btn.textContent = 'Analiz ediliyor...';
 
   try {
+    // 1. Kanal ID bul
     setStatus('Kanal aranıyor...');
     const id = await extractId(input);
 
+    // 2. Kanal bilgileri
     setStatus('Kanal bilgileri alınıyor...');
-    const chData = await yt('channels?part=snippet,statistics,topicDetails&id=' + id);
-    if (!chData.items?.length) throw new Error('Kanal detayı alınamadı.');
-    sourceChannel = chData.items[0];
+    const chRes = await yt('channels?part=snippet,statistics&id=' + id);
+    if (!chRes.items?.length) throw new Error('Kanal bulunamadı.');
+    const ch = chRes.items[0];
+    const chName = ch.snippet.title;
+    const chAvatar = ch.snippet.thumbnails?.medium?.url || ch.snippet.thumbnails?.default?.url || '';
+    const chDesc = (ch.snippet.description || '').slice(0, 200);
 
+    // 3. Son 5 video başlığı
     setStatus('Son videolar inceleniyor...');
-    const vData = await yt('search?part=snippet&channelId=' + id + '&type=video&order=date&maxResults=10');
-    const videoTitles = (vData.items || []).map(v => v.snippet.title);
+    const vRes = await yt('search?part=snippet&channelId=' + id + '&type=video&order=date&maxResults=5');
+    const videoTitles = (vRes.items || []).map(v => v.snippet.title);
 
-    // TEK GEMINI PROMPT — niş + arama kelimeleri + niş lideri araması hepsi bir arada
-    setStatus('Gemini AI ile analiz yapılıyor...');
-    const bigPrompt = `Sen bir YouTube kanal analisti ve SEO uzmanısın. Aşağıdaki kanal bilgilerini analiz et ve JSON formatında yanıt ver.
+    // 4. TEK GEMINI PROMPT — konsept analizi + arama sorguları birlikte
+    setStatus('İçerik analizi yapılıyor...');
+    const prompt = `Sen bir YouTube içerik analistisin. Aşağıdaki kanalı analiz et.
 
-KANAL BİLGİLERİ:
-- Ad: ${sourceChannel.snippet.title}
-- Abone: ${fmt(sourceChannel.statistics?.subscriberCount)}
-- Açıklama: ${(sourceChannel.snippet.description || '').slice(0, 300)}
-- Son video başlıkları: ${videoTitles.slice(0, 8).join(' | ')}
+KANAL: "${chName}"
+AÇIKLAMA: ${chDesc}
+SON 5 VİDEO BAŞLIĞI:
+${videoTitles.map((t,i) => (i+1)+'. '+t).join('\n')}
 
-Şu bilgileri JSON olarak ver (başka hiçbir şey yazma, sadece JSON):
+Bu kanalın içerik konseptini anla. Sadece JSON döndür, başka hiçbir şey yazma:
 {
-  "niche": "kanalın nişi (Türkçe, 1-3 kelime)",
-  "niche_en": "kanalın nişi (İngilizce, 1-3 kelime, YouTube araması için)",
-  "search_queries": ["bu nişte benzer kanal bulmak için 3 farklı YouTube arama sorgusu (İngilizce)"],
-  "niche_leader_query": "bu nişin en büyük/popüler kanallarını bulmak için YouTube arama sorgusu (İngilizce)",
-  "keywords": ["bu kanalı tanımlayan 5 anahtar kelime (İngilizce)"]
+  "concept": "Bu kanalın içerik konseptini 1-2 cümleyle Türkçe açıkla",
+  "queries": ["bu kanalın içeriğiyle birebir aynı konseptte kanallar bulmak için 4 farklı YouTube arama sorgusu (İngilizce, kanal adından bağımsız, içeriğe odaklı)"]
 }`;
 
-    let geminiResult;
-    try {
-      const raw = await gemini(bigPrompt);
-      const cleaned = raw.replace(/```json|```/g, '').trim();
-      geminiResult = JSON.parse(cleaned);
-    } catch {
-      geminiResult = {
-        niche: 'Genel',
-        niche_en: sourceChannel.snippet.title,
-        search_queries: [sourceChannel.snippet.title + ' channel', sourceChannel.snippet.title + ' youtube'],
-        niche_leader_query: sourceChannel.snippet.title + ' top channel',
-        keywords: [sourceChannel.snippet.title]
-      };
-    }
+    const raw = await gemini(prompt);
+    const cleaned = raw.replace(/```json|```/g, '').trim();
+    let geminiData;
+    try { geminiData = JSON.parse(cleaned); }
+    catch { throw new Error('AI yanıtı işlenemedi, tekrar dene.'); }
 
-    const niche = geminiResult.niche || 'Genel';
-    const avatar = sourceChannel.snippet.thumbnails?.medium?.url || sourceChannel.snippet.thumbnails?.default?.url || '';
+    const concept = geminiData.concept || '';
+    const queries = geminiData.queries || [];
 
+    // Kaynak kanalı göster
     document.getElementById('sourceCard').innerHTML =
       '<div class="source-card">' +
-        (avatar ? '<img src="' + avatar + '" alt="' + sourceChannel.snippet.title + '" style="width:60px;height:60px;">' : '<div class="avatar-fallback" style="width:60px;height:60px;font-size:18px;">' + initials(sourceChannel.snippet.title) + '</div>') +
-        '<div class="card-info">' +
-          '<h3><a href="https://youtube.com/channel/' + sourceChannel.id + '" target="_blank">' + sourceChannel.snippet.title + '</a></h3>' +
-          '<div class="card-meta"><span>' + fmt(sourceChannel.statistics?.subscriberCount) + ' abone</span><span>' + fmt(sourceChannel.statistics?.viewCount) + ' toplam izlenme</span></div>' +
-          '<div class="card-desc">' + (sourceChannel.snippet.description || '').slice(0, 150) + '</div>' +
-          '<div class="niche-badge">📌 ' + niche + '</div>' +
+        avatarHTML(chAvatar, chName, 56) +
+        '<div style="flex:1;min-width:0;">' +
+          '<div class="card-title"><a href="https://youtube.com/channel/' + id + '" target="_blank">' + chName + '</a></div>' +
+          '<div class="card-meta">' + fmt(ch.statistics?.subscriberCount) + '</div>' +
+          '<div class="card-desc">' + chDesc + '</div>' +
+          (concept ? '<div class="concept-box"><div class="concept-label">AI KONSEPTi</div>' + concept + '</div>' : '') +
         '</div>' +
       '</div>';
     document.getElementById('mainContent').style.display = 'block';
 
-    // Paralel arama — tüm query'leri aynı anda çalıştır
+    // 5. YouTube araması — sorguları paralel çalıştır
     setStatus('Benzer kanallar aranıyor...');
-    const queries = geminiResult.search_queries || [];
-    const searchPromises = queries.map(q => searchYT(q, id));
-    const searchResults = await Promise.all(searchPromises);
+    const searchResults = await Promise.all(
+      queries.map(q =>
+        yt('search?part=snippet&type=channel&q=' + encodeURIComponent(q) + '&maxResults=10')
+          .then(d => (d.items || []).map(i => i.snippet.channelId))
+          .catch(() => [])
+      )
+    );
 
-    // Tekrarları temizle, birleştir
-    const seen = new Set();
-    const combined = [];
+    // Tekrarları temizle, kaynak kanalı çıkar, max 14 ID al
+    const seen = new Set([id]);
+    const candidateIds = [];
     for (const arr of searchResults) {
-      for (const ch of arr) {
-        if (!seen.has(ch.id)) { seen.add(ch.id); combined.push(ch); }
+      for (const cid of arr) {
+        if (!seen.has(cid) && candidateIds.length < 14) { seen.add(cid); candidateIds.push(cid); }
       }
     }
 
-    // Niş liderleri
-    const nicheLeaders = await searchYT(geminiResult.niche_leader_query || niche + ' top youtube channel', id);
-    const leadersSeen = new Set([id]);
-    const leaders = [];
-    for (const ch of nicheLeaders) {
-      if (!leadersSeen.has(ch.id)) { leadersSeen.add(ch.id); leaders.push(ch); }
+    if (!candidateIds.length) throw new Error('Benzer kanal bulunamadı, farklı bir kanal dene.');
+
+    // 6. Kanal detayları
+    setStatus('Kanal detayları alınıyor...');
+    const detRes = await yt('channels?part=snippet,statistics&id=' + candidateIds.join(','));
+    const candidates = detRes.items || [];
+
+    // 7. Sadece 7 tane göster — en yüksek abone sayılıları al (hızlı filtre, Gemini harcama yok)
+    // Sonra içerik benzerliğine göre sıralamak için Gemini ile tek seferde kontrol
+    const top14 = candidates.slice(0, 14);
+    const candidateSummary = top14.map((c,i) =>
+      (i+1) + '. ID:' + c.id + ' | "' + c.snippet.title + '" | ' + fmt(c.statistics?.subscriberCount) + ' | ' + (c.snippet.description||'').slice(0,80)
+    ).join('\n');
+
+    setStatus('En benzer 7 kanal seçiliyor...');
+    const rankPrompt = `Kaynak kanal konsepti: "${concept}"
+
+Aşağıdaki aday kanalları bu konseptle ne kadar örtüştüğüne göre sırala. Sadece JSON döndür:
+{
+  "ranked": [
+    {"id": "<kanal id>", "why": "<neden benzer — 1 kısa Türkçe cümle>"},
+    ... (sadece en benzer 7 tanesini listele)
+  ]
+}
+
+ADAYLAR:
+${candidateSummary}`;
+
+    let ranked = [];
+    try {
+      const rankRaw = await gemini(rankPrompt);
+      const rankCleaned = rankRaw.replace(/```json|```/g, '').trim();
+      const rankData = JSON.parse(rankCleaned);
+      ranked = rankData.ranked || [];
+    } catch {
+      // Gemini başarısız olursa ilk 7'yi al
+      ranked = top14.slice(0,7).map(c => ({ id: c.id, why: '' }));
     }
 
-    // Gemini ile benzerlik analizi — tüm kanalları TEK SEFERDE analiz et
-    setStatus('Benzerlik skorları hesaplanıyor...');
-    const allToAnalyze = [...combined.slice(0, 8), ...leaders.slice(0, 4)];
-    if (allToAnalyze.length > 0) {
-      const analysisPrompt = `Kaynak kanal: "${sourceChannel.snippet.title}" - Niş: ${niche} - Abone: ${fmt(sourceChannel.statistics?.subscriberCount)}
+    // Sonuçları render et
+    const channelMap = {};
+    for (const c of candidates) channelMap[c.id] = c;
 
-Aşağıdaki kanalların her biri için benzerlik skoru (0-100) ve 1 cümlelik Türkçe açıklama ver.
-Sadece JSON array döndür, başka hiçbir şey yazma:
-[
-  ${allToAnalyze.map((ch, i) => `{"id": "${ch.id}", "score": <0-100 arası sayı>, "reason": "<1 cümle Türkçe>"}`).join(',\n  ')}
-]
+    const finalList = ranked.slice(0,7).map(r => ({ ch: channelMap[r.id], why: r.why })).filter(x => x.ch);
 
-Kanallar:
-${allToAnalyze.map((ch, i) => `${i+1}. "${ch.snippet.title}" - ${fmt(ch.statistics?.subscriberCount)} abone - ${(ch.snippet.description || '').slice(0,100)}`).join('\n')}`;
+    if (!finalList.length) throw new Error('Uygun kanal bulunamadı, tekrar dene.');
 
-      try {
-        const rawAnalysis = await gemini(analysisPrompt);
-        const cleanedAnalysis = rawAnalysis.replace(/```json|```/g, '').trim();
-        const analysisArr = JSON.parse(cleanedAnalysis);
-        const analysisMap = {};
-        for (const item of analysisArr) { analysisMap[item.id] = item; }
+    document.getElementById('resultList').innerHTML = finalList.map(({ ch, why }) => {
+      const name = ch.snippet.title;
+      const av = ch.snippet.thumbnails?.default?.url || '';
+      const url = 'https://youtube.com/channel/' + ch.id;
+      return '<div class="result-card">' +
+        avatarHTML(av, name, 44) +
+        '<div class="result-info">' +
+          '<div class="result-top">' +
+            '<a href="' + url + '" target="_blank">' + name + '</a>' +
+            '<span class="subs">' + fmt(ch.statistics?.subscriberCount) + '</span>' +
+          '</div>' +
+          (why ? '<div class="result-why">' + why + '</div>' : '') +
+        '</div>' +
+        '<a href="' + url + '" target="_blank" class="ext-link">↗</a>' +
+      '</div>';
+    }).join('');
 
-        for (const ch of allToAnalyze) {
-          const a = analysisMap[ch.id];
-          if (a) { ch._score = a.score || 0; ch._analysis = a.reason || ''; }
-        }
-      } catch { /* analiz olmadan devam et */ }
-    }
-
-    // Skora göre sırala
-    combined.sort((a, b) => (b._score || 0) - (a._score || 0));
-    leaders.sort((a, b) => (b._score || 0) - (a._score || 0));
-
-    allResults.similar = combined;
-    allResults.niche = leaders;
-
-    renderResults();
     setStatus('');
-
   } catch (err) {
     setStatus('');
-    showError(err.message || 'Bilinmeyen hata oluştu.');
+    showError(err.message || 'Bilinmeyen hata.');
   } finally {
     btn.disabled = false; btn.textContent = 'Analiz Et';
   }
