@@ -59,7 +59,7 @@
   .filter-btn:hover { border-color: var(--red); color: var(--text); }
   .filter-btn.active { background: var(--red); border-color: var(--red); color: white; }
 
-  #status { display: none; font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; padding-left: 2px; }
+  #status { display: none; font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; }
   .loader {
     display: inline-block; width: 10px; height: 10px;
     border: 2px solid var(--border); border-top-color: var(--red);
@@ -84,9 +84,9 @@
   }
   .source-card img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
   .avatar-fallback {
-    width: 60px; height: 60px; border-radius: 50%; background: var(--red);
+    border-radius: 50%; background: var(--red);
     display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 18px; color: white; flex-shrink: 0;
+    font-weight: 700; color: white; flex-shrink: 0;
   }
   .card-info { flex: 1; min-width: 0; }
   .card-info h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
@@ -127,13 +127,17 @@
   .size-bigger { border-color: rgba(0,200,100,0.3); color: #00c864; }
   .size-rising { border-color: rgba(100,150,255,0.3); color: #6496ff; }
   .result-desc { font-size: 12px; color: #888; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 6px; }
+
   .ai-analysis {
     background: var(--surface2); border-radius: 8px; padding: 10px 12px;
     font-size: 12px; color: #bbb; line-height: 1.6; margin-top: 6px;
     border-left: 2px solid var(--red);
   }
   .ai-label { font-size: 10px; color: var(--red); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; font-family: 'Space Mono', monospace; }
-  .ai-loading { color: var(--muted); font-style: italic; }
+
+  .score-bar { height: 3px; background: var(--border); border-radius: 2px; margin-top: 6px; overflow: hidden; }
+  .score-fill { height: 100%; background: var(--red); border-radius: 2px; transition: width 0.8s ease; }
+
   .ext-link { color: var(--muted); flex-shrink: 0; font-size: 16px; text-decoration: none; margin-top: 2px; }
   .ext-link:hover { color: var(--text); }
 
@@ -147,7 +151,7 @@
     <svg viewBox="0 0 24 24"><path d="M10 15V9l5 3z"/><path d="M21.58 7.19a2.76 2.76 0 0 0-1.94-1.95C17.88 4.75 12 4.75 12 4.75s-5.88 0-7.64.49A2.76 2.76 0 0 0 2.42 7.19 28.94 28.94 0 0 0 2 12a28.94 28.94 0 0 0 .42 4.81 2.76 2.76 0 0 0 1.94 1.95C6.12 19.25 12 19.25 12 19.25s5.88 0 7.64-.49a2.76 2.76 0 0 0 1.94-1.95A28.94 28.94 0 0 0 22 12a28.94 28.94 0 0 0-.42-4.81z"/></svg>
   </div>
   <h1>BENZER KANAL BULUCU</h1>
-  <span>AI destekli · YouTube API v3</span>
+  <span>Gemini AI · YouTube API v3</span>
 </header>
 
 <main>
@@ -183,15 +187,17 @@
   </div>
 </main>
 
-<footer>YouTube Data API v3 + Claude AI ile güçlendirilmiştir</footer>
+<footer>YouTube Data API v3 + Gemini AI ile güçlendirilmiştir</footer>
 
 <script>
 const YT_KEY = 'AIzaSyD_I0K-QSgYbk5bMXa0OjTARgUGXICD1G8';
+const GEMINI_KEY = 'AIzaSyDasZkw2jYy36e6t9c3Xeg4ZAedl_--jVE';
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_KEY;
+
 let currentFilter = 'all';
 let currentTab = 'similar';
 let allResults = { similar: [], niche: [] };
 let sourceChannel = null;
-let sourceInfo = null;
 
 function setFilter(el) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -222,13 +228,13 @@ function fmt(n) {
   if (n >= 1000) return Math.round(n/1000) + 'K';
   return n.toString();
 }
-function initials(name) { return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2); }
+function initials(name) { return (name || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2); }
 
 function sizeInfo(targetSubs) {
   if (!sourceChannel?.statistics?.subscriberCount || !targetSubs) return { label: '', cls: '' };
   const ratio = parseInt(targetSubs) / parseInt(sourceChannel.statistics.subscriberCount);
-  if (ratio >= 3) return { label: 'Niş lideri', cls: 'size-bigger' };
-  if (ratio <= 0.33) return { label: 'Yükselen', cls: 'size-rising' };
+  if (ratio >= 5) return { label: 'Niş lideri', cls: 'size-bigger' };
+  if (ratio <= 0.2) return { label: 'Yükselen', cls: 'size-rising' };
   return { label: 'Benzer büyüklük', cls: 'size-similar' };
 }
 
@@ -238,66 +244,21 @@ function filterMatch(ch) {
   const t = parseInt(ch.statistics?.subscriberCount || 0);
   if (!s || !t) return true;
   const ratio = t / s;
-  if (currentFilter === 'similar') return ratio >= 0.33 && ratio <= 3;
-  if (currentFilter === 'bigger') return ratio >= 3;
-  if (currentFilter === 'rising') return ratio <= 0.33;
+  if (currentFilter === 'similar') return ratio >= 0.2 && ratio <= 5;
+  if (currentFilter === 'bigger') return ratio >= 5;
+  if (currentFilter === 'rising') return ratio <= 0.2;
   return true;
 }
 
-function resultCardHTML(ch) {
-  const name = ch.snippet.title;
-  const avatar = ch.snippet.thumbnails?.default?.url || '';
-  const subs = fmt(ch.statistics?.subscriberCount);
-  const desc = (ch.snippet.description || '').slice(0, 100);
-  const url = 'https://youtube.com/channel/' + ch.id;
-  const size = sizeInfo(ch.statistics?.subscriberCount);
-  const avatarHTML = avatar
-    ? '<img src="' + avatar + '" alt="' + name + '" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'">'
-    : '';
-  const fallback = '<div class="result-avatar" ' + (avatar ? 'style="display:none"' : '') + '>' + initials(name) + '</div>';
-  return '<div class="result-card" id="card-' + ch.id + '">' +
-    avatarHTML + fallback +
-    '<div class="result-info">' +
-      '<div class="result-top">' +
-        '<a href="' + url + '" target="_blank">' + name + '</a>' +
-        '<span class="subs-badge">' + subs + ' abone</span>' +
-        (size.label ? '<span class="subs-badge ' + size.cls + '">' + size.label + '</span>' : '') +
-      '</div>' +
-      (desc ? '<div class="result-desc">' + desc + '</div>' : '') +
-      '<div class="ai-analysis" id="ai-' + ch.id + '"><div class="ai-label">AI ANALİZİ</div><div class="ai-loading">Analiz ediliyor...</div></div>' +
-    '</div>' +
-    '<a href="' + url + '" target="_blank" class="ext-link">↗</a>' +
-  '</div>';
-}
-
-function renderResults() {
-  const list = document.getElementById('resultList');
-  const data = allResults[currentTab] || [];
-  const filtered = data.filter(filterMatch);
-  if (!filtered.length) {
-    list.innerHTML = '<p style="font-size:13px;color:var(--muted);padding:1rem 0;">Bu filtrede sonuç yok.</p>';
-    return;
-  }
-  list.innerHTML = filtered.map(ch => resultCardHTML(ch)).join('');
-  filtered.slice(0, 6).forEach(ch => runAI(ch));
-}
-
-async function runAI(ch) {
-  const el = document.getElementById('ai-' + ch.id);
-  if (!el || !sourceInfo) return;
-  try {
-    const prompt = 'Sen bir YouTube niş analistisin. Kısa ve net yaz.\n\nKAYNAK KANAL: "' + sourceInfo.name + '" - ' + sourceInfo.subs + ' abone - Niş: ' + sourceInfo.niche + '\n\nHEDEF KANAL: "' + ch.snippet.title + '" - ' + fmt(ch.statistics?.subscriberCount) + ' abone\nAçıklama: ' + (ch.snippet.description || '').slice(0, 200) + '\n\nBu iki kanal ne kadar benzer? Şu formatta yanıtla (maksimum 2 cümle Türkçe):\n"[Benzerlik yüzdesi]% uyumlu. [Neden benzer veya farklı]"';
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
-    });
-    const data = await res.json();
-    const text = data.content?.[0]?.text || 'Analiz yapılamadı.';
-    el.innerHTML = '<div class="ai-label">AI ANALİZİ</div>' + text;
-  } catch {
-    el.innerHTML = '<div class="ai-label">AI ANALİZİ</div><span class="ai-loading">Şu an kullanılamıyor.</span>';
-  }
+async function gemini(prompt) {
+  const res = await fetch(GEMINI_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 }
 
 async function yt(path) {
@@ -318,25 +279,55 @@ async function extractId(input) {
   return data.items[0].snippet.channelId;
 }
 
-async function detectNiche(name, desc, titles) {
+async function searchYT(query, excludeId) {
   try {
-    const prompt = 'YouTube kanalı niş tespiti. Sadece niş adını Türkçe yaz, başka hiçbir şey yazma.\n\nKanal: "' + name + '"\nAçıklama: ' + desc.slice(0,200) + '\nSon videolar: ' + titles.slice(0,5).join(' | ') + '\n\nNiş:';
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
-    });
-    const data = await res.json();
-    return data.content?.[0]?.text?.trim() || '';
-  } catch { return ''; }
+    const data = await yt('search?part=snippet&type=channel&q=' + encodeURIComponent(query) + '&maxResults=15');
+    const ids = (data.items || []).map(i => i.snippet.channelId).filter(id => id !== excludeId);
+    if (!ids.length) return [];
+    const det = await yt('channels?part=snippet,statistics&id=' + ids.slice(0,10).join(','));
+    return det.items || [];
+  } catch { return []; }
 }
 
-async function searchChannels(query, excludeId) {
-  const data = await yt('search?part=snippet&type=channel&q=' + encodeURIComponent(query) + '&maxResults=15');
-  const ids = (data.items || []).map(i => i.snippet.channelId).filter(id => id !== excludeId);
-  if (!ids.length) return [];
-  const det = await yt('channels?part=snippet,statistics&id=' + ids.join(','));
-  return det.items || [];
+function renderResults() {
+  const list = document.getElementById('resultList');
+  const data = allResults[currentTab] || [];
+  const filtered = data.filter(filterMatch);
+  if (!filtered.length) {
+    list.innerHTML = '<p style="font-size:13px;color:var(--muted);padding:1rem 0;">Bu filtrede sonuç yok.</p>';
+    return;
+  }
+  list.innerHTML = filtered.map(ch => resultCardHTML(ch)).join('');
+}
+
+function resultCardHTML(ch) {
+  const name = ch.snippet.title;
+  const avatar = ch.snippet.thumbnails?.default?.url || '';
+  const subs = fmt(ch.statistics?.subscriberCount);
+  const desc = (ch.snippet.description || '').slice(0, 100);
+  const url = 'https://youtube.com/channel/' + ch.id;
+  const size = sizeInfo(ch.statistics?.subscriberCount);
+  const score = ch._score || 0;
+  const analysis = ch._analysis || '';
+
+  const avatarHTML = avatar
+    ? '<img src="' + avatar + '" alt="' + name + '" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'">'
+    : '';
+  const fallback = '<div class="result-avatar" ' + (avatar ? 'style="display:none"' : '') + '>' + initials(name) + '</div>';
+
+  return '<div class="result-card">' +
+    avatarHTML + fallback +
+    '<div class="result-info">' +
+      '<div class="result-top">' +
+        '<a href="' + url + '" target="_blank">' + name + '</a>' +
+        '<span class="subs-badge">' + subs + ' abone</span>' +
+        (size.label ? '<span class="subs-badge ' + size.cls + '">' + size.label + '</span>' : '') +
+      '</div>' +
+      (desc ? '<div class="result-desc">' + desc + '</div>' : '') +
+      (analysis ? '<div class="ai-analysis"><div class="ai-label">AI ANALİZİ · ' + score + '% uyum</div>' + analysis + '<div class="score-bar"><div class="score-fill" style="width:' + score + '%"></div></div></div>' : '') +
+    '</div>' +
+    '<a href="' + url + '" target="_blank" class="ext-link">↗</a>' +
+  '</div>';
 }
 
 async function startSearch() {
@@ -345,6 +336,7 @@ async function startSearch() {
   hideError();
   document.getElementById('mainContent').style.display = 'none';
   allResults = { similar: [], niche: [] };
+
   const btn = document.getElementById('searchBtn');
   btn.disabled = true; btn.textContent = 'Analiz ediliyor...';
 
@@ -358,36 +350,120 @@ async function startSearch() {
     sourceChannel = chData.items[0];
 
     setStatus('Son videolar inceleniyor...');
-    const vData = await yt('search?part=snippet&channelId=' + id + '&type=video&order=date&maxResults=8');
-    const titles = (vData.items || []).map(v => v.snippet.title);
+    const vData = await yt('search?part=snippet&channelId=' + id + '&type=video&order=date&maxResults=10');
+    const videoTitles = (vData.items || []).map(v => v.snippet.title);
 
-    setStatus('AI ile niş tespit ediliyor...');
-    const niche = await detectNiche(sourceChannel.snippet.title, sourceChannel.snippet.description || '', titles);
+    // TEK GEMINI PROMPT — niş + arama kelimeleri + niş lideri araması hepsi bir arada
+    setStatus('Gemini AI ile analiz yapılıyor...');
+    const bigPrompt = `Sen bir YouTube kanal analisti ve SEO uzmanısın. Aşağıdaki kanal bilgilerini analiz et ve JSON formatında yanıt ver.
 
-    sourceInfo = { name: sourceChannel.snippet.title, subs: fmt(sourceChannel.statistics?.subscriberCount), niche: niche || 'Genel' };
+KANAL BİLGİLERİ:
+- Ad: ${sourceChannel.snippet.title}
+- Abone: ${fmt(sourceChannel.statistics?.subscriberCount)}
+- Açıklama: ${(sourceChannel.snippet.description || '').slice(0, 300)}
+- Son video başlıkları: ${videoTitles.slice(0, 8).join(' | ')}
 
+Şu bilgileri JSON olarak ver (başka hiçbir şey yazma, sadece JSON):
+{
+  "niche": "kanalın nişi (Türkçe, 1-3 kelime)",
+  "niche_en": "kanalın nişi (İngilizce, 1-3 kelime, YouTube araması için)",
+  "search_queries": ["bu nişte benzer kanal bulmak için 3 farklı YouTube arama sorgusu (İngilizce)"],
+  "niche_leader_query": "bu nişin en büyük/popüler kanallarını bulmak için YouTube arama sorgusu (İngilizce)",
+  "keywords": ["bu kanalı tanımlayan 5 anahtar kelime (İngilizce)"]
+}`;
+
+    let geminiResult;
+    try {
+      const raw = await gemini(bigPrompt);
+      const cleaned = raw.replace(/```json|```/g, '').trim();
+      geminiResult = JSON.parse(cleaned);
+    } catch {
+      geminiResult = {
+        niche: 'Genel',
+        niche_en: sourceChannel.snippet.title,
+        search_queries: [sourceChannel.snippet.title + ' channel', sourceChannel.snippet.title + ' youtube'],
+        niche_leader_query: sourceChannel.snippet.title + ' top channel',
+        keywords: [sourceChannel.snippet.title]
+      };
+    }
+
+    const niche = geminiResult.niche || 'Genel';
     const avatar = sourceChannel.snippet.thumbnails?.medium?.url || sourceChannel.snippet.thumbnails?.default?.url || '';
+
     document.getElementById('sourceCard').innerHTML =
       '<div class="source-card">' +
-        (avatar ? '<img src="' + avatar + '" alt="' + sourceChannel.snippet.title + '">' : '<div class="avatar-fallback">' + initials(sourceChannel.snippet.title) + '</div>') +
+        (avatar ? '<img src="' + avatar + '" alt="' + sourceChannel.snippet.title + '" style="width:60px;height:60px;">' : '<div class="avatar-fallback" style="width:60px;height:60px;font-size:18px;">' + initials(sourceChannel.snippet.title) + '</div>') +
         '<div class="card-info">' +
           '<h3><a href="https://youtube.com/channel/' + sourceChannel.id + '" target="_blank">' + sourceChannel.snippet.title + '</a></h3>' +
-          '<div class="card-meta"><span>' + sourceInfo.subs + ' abone</span><span>' + fmt(sourceChannel.statistics?.viewCount) + ' toplam izlenme</span></div>' +
-          '<div class="card-desc">' + (sourceChannel.snippet.description || '').slice(0,150) + '</div>' +
-          (niche ? '<div class="niche-badge">📌 ' + niche + '</div>' : '') +
+          '<div class="card-meta"><span>' + fmt(sourceChannel.statistics?.subscriberCount) + ' abone</span><span>' + fmt(sourceChannel.statistics?.viewCount) + ' toplam izlenme</span></div>' +
+          '<div class="card-desc">' + (sourceChannel.snippet.description || '').slice(0, 150) + '</div>' +
+          '<div class="niche-badge">📌 ' + niche + '</div>' +
         '</div>' +
       '</div>';
     document.getElementById('mainContent').style.display = 'block';
 
+    // Paralel arama — tüm query'leri aynı anda çalıştır
     setStatus('Benzer kanallar aranıyor...');
-    const q1 = (niche || sourceChannel.snippet.title) + ' ' + titles.slice(0,2).join(' ');
-    allResults.similar = await searchChannels(q1, id);
+    const queries = geminiResult.search_queries || [];
+    const searchPromises = queries.map(q => searchYT(q, id));
+    const searchResults = await Promise.all(searchPromises);
 
-    setStatus('Niş liderleri aranıyor...');
-    allResults.niche = (await searchChannels((niche || '') + ' youtube en iyi', id)).filter(c => c.id !== id);
+    // Tekrarları temizle, birleştir
+    const seen = new Set();
+    const combined = [];
+    for (const arr of searchResults) {
+      for (const ch of arr) {
+        if (!seen.has(ch.id)) { seen.add(ch.id); combined.push(ch); }
+      }
+    }
+
+    // Niş liderleri
+    const nicheLeaders = await searchYT(geminiResult.niche_leader_query || niche + ' top youtube channel', id);
+    const leadersSeen = new Set([id]);
+    const leaders = [];
+    for (const ch of nicheLeaders) {
+      if (!leadersSeen.has(ch.id)) { leadersSeen.add(ch.id); leaders.push(ch); }
+    }
+
+    // Gemini ile benzerlik analizi — tüm kanalları TEK SEFERDE analiz et
+    setStatus('Benzerlik skorları hesaplanıyor...');
+    const allToAnalyze = [...combined.slice(0, 8), ...leaders.slice(0, 4)];
+    if (allToAnalyze.length > 0) {
+      const analysisPrompt = `Kaynak kanal: "${sourceChannel.snippet.title}" - Niş: ${niche} - Abone: ${fmt(sourceChannel.statistics?.subscriberCount)}
+
+Aşağıdaki kanalların her biri için benzerlik skoru (0-100) ve 1 cümlelik Türkçe açıklama ver.
+Sadece JSON array döndür, başka hiçbir şey yazma:
+[
+  ${allToAnalyze.map((ch, i) => `{"id": "${ch.id}", "score": <0-100 arası sayı>, "reason": "<1 cümle Türkçe>"}`).join(',\n  ')}
+]
+
+Kanallar:
+${allToAnalyze.map((ch, i) => `${i+1}. "${ch.snippet.title}" - ${fmt(ch.statistics?.subscriberCount)} abone - ${(ch.snippet.description || '').slice(0,100)}`).join('\n')}`;
+
+      try {
+        const rawAnalysis = await gemini(analysisPrompt);
+        const cleanedAnalysis = rawAnalysis.replace(/```json|```/g, '').trim();
+        const analysisArr = JSON.parse(cleanedAnalysis);
+        const analysisMap = {};
+        for (const item of analysisArr) { analysisMap[item.id] = item; }
+
+        for (const ch of allToAnalyze) {
+          const a = analysisMap[ch.id];
+          if (a) { ch._score = a.score || 0; ch._analysis = a.reason || ''; }
+        }
+      } catch { /* analiz olmadan devam et */ }
+    }
+
+    // Skora göre sırala
+    combined.sort((a, b) => (b._score || 0) - (a._score || 0));
+    leaders.sort((a, b) => (b._score || 0) - (a._score || 0));
+
+    allResults.similar = combined;
+    allResults.niche = leaders;
 
     renderResults();
     setStatus('');
+
   } catch (err) {
     setStatus('');
     showError(err.message || 'Bilinmeyen hata oluştu.');
