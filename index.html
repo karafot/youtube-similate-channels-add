@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouTube Benzer Kanal Bulucu</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --red: #FF0000;
+    --red-dark: #cc0000;
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --text: #f0f0f0;
+    --muted: #888;
+    --accent: #FF0000;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+  }
+
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--red);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-icon svg {
+    width: 18px;
+    height: 18px;
+    fill: white;
+  }
+
+  header h1 {
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text);
+  }
+
+  header span {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: auto;
+  }
+
+  main {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+  }
+
+  .hero {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .hero h2 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 300;
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+  }
+
+  .hero h2 strong {
+    font-weight: 600;
+    color: var(--red);
+  }
+
+  .hero p {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .search-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 2rem;
+  }
+
+  .search-box input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-box input::placeholder { color: var(--muted); }
+
+  .search-box input:focus {
+    border-color: var(--red);
+  }
+
+  .search-box button {
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    white-space: nowrap;
+  }
+
+  .search-box button:hover { background: var(--red-dark); }
+  .search-box button:active { transform: scale(0.97); }
+  .search-box button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .examples {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+  }
+
+  .examples span {
+    font-size: 12px;
+    color: var(--muted);
+    padding-right: 8px;
+  }
+
+  .example-tag {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .example-tag:hover {
+    border-color: var(--red);
+    color: var(--text);
+  }
+
+  #status {
+    display: none;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+    padding-left: 4px;
+  }
+
+  .loader {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border: 2px solid var(--border);
+    border-top-color: var(--red);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  #error {
+    display: none;
+    background: rgba(255,0,0,0.08);
+    border: 1px solid rgba(255,0,0,0.2);
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: #ff6b6b;
+    margin-bottom: 1.5rem;
+  }
+
+  .channel-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  .channel-card img {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .channel-avatar-fallback {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .channel-info { flex: 1; min-width: 0; }
+
+  .channel-info h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .channel-info h3 a {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .channel-info h3 a:hover { color: var(--red); }
+
+  .channel-meta {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .channel-desc {
+    font-size: 13px;
+    color: #aaa;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 12px;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    margin-top: 2rem;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-icon">
+    <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-2.75 12.55 12.55 0 0 0-8.35 3.54 13.08 13.08 0 0 0-3.82 9.09 13 13 0 0 0 3.82 9.09 12.55 12.55 0 0 0 8.35 3.54 4.83 4.83 0 0 1 3.77-2.75A13.27 13.27 0 0 0 23 16.57a13.27 13.27 0 0 0-3.41-9.88zM10 15V9l5 3z"/></svg>
+  </div>
+  <h1>BENZER KANAL BULUCU</h1>
+  <span>YouTube API v3</span>
+</header>
+
+<main>
+  <div class="hero">
+    <h2>Kanalına <strong>benzer</strong><br>kanalları keşfet</h2>
+    <p>Bir YouTube kanal adresi gir, benzer içerik üreticilerini bul.</p>
+  </div>
+
+  <div class="search-box">
+    <input type="text" id="channelInput" placeholder="@kanaladi veya youtube.com/... veya UCxxxx" />
+    <button onclick="searchSimilar()" id="searchBtn">Bul</button>
+  </div>
+
+  <div class="examples">
+    <span>Örnek:</span>
+    <div class="example-tag" onclick="fillExample('@MrBeast')">@MrBeast</div>
+    <div class="example-tag" onclick="fillExample('@mkbhd')">@mkbhd</div>
+    <div class="example-tag" onclick="fillExample('@veritasium')">@veritasium</div>
+  </div>
+
+  <div id="status"></div>
+  <div id="error"></div>
+
+  <div id="sourceSection" style="display:none;">
+    <div class="section-label">Aranan Kanal</div>
+    <div id="sourceCard"></div>
+    <div class="section-label" style="margin-top:2rem;">Benzer Kanallar</div>
+    <div id="resultList"></div>
+  </div>
+</main>
+
+<footer>YouTube Data API v3 kullanılarak yapılmıştır</footer>
+
+<script>
+const API_KEY = 'AIzaSyD_I0K-QSgYbk5bMXa0OjTARgUGXICD1G8';
+
+function fillExample(val) {
+  document.getElementById('channelInput').value = val;
+  searchSimilar();
+}
+
+function setStatus(msg) {
+  const el = document.getElementById('status');
+  if (msg) {
+    el.style.display = 'block';
+    el.innerHTML = `<span class="loader"></span>${msg}`;
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('error');
+  el.style.display = 'block';
+  el.textContent = '⚠ ' + msg;
+}
+
+function hideError() {
+  document.getElementById('error').style.display = 'none';
+}
+
+function formatSubs(n) {
+  if (!n) return '';
+  n = parseInt(n);
+  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M abone';
+  if (n >= 1000) return Math.round(n/1000) + 'K abone';
+  return n + ' abone';
+}
+
+function initials(name) {
+  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+}
+
+function channelCardHTML(ch, isSource) {
+  const name = ch.snippet.title;
+  const avatar = ch.snippet.thumbnails?.medium?.url || ch.snippet.thumbnails?.default?.url || '';
+  const subs = formatSubs(ch.statistics?.subscriberCount);
+  const desc = (ch.snippet.description || '').slice(0, 120);
+  const url = `https://youtube.com/channel/${ch.id}`;
+  const avatarHTML = avatar
+    ? `<img src="${avatar}" alt="${name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+       <div class="channel-avatar-fallback" style="display:none">${initials(name)}</div>`
+    : `<div class="channel-avatar-fallback">${initials(name)}</div>`;
+
+  return `
+    <div class="channel-card">
+      ${avatarHTML}
+      <div class="channel-info">
+        <h3><a href="${url}" target="_blank">${name}</a></h3>
+        ${subs ? `<div class="channel-meta">${subs}</div>` : ''}
+        ${desc ? `<div class="channel-desc">${desc}</div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+async function extractChannelId(input) {
+  input = input.trim();
+  if (input.startsWith('UC') && input.length > 20) return input;
+
+  let handle = '';
+  if (input.includes('youtube.com/@')) {
+    handle = input.split('youtube.com/@')[1].split(/[/?]/)[0];
+  } else if (input.includes('youtube.com/channel/')) {
+    return input.split('youtube.com/channel/')[1].split(/[/?]/)[0];
+  } else if (input.startsWith('@')) {
+    handle = input.slice(1);
+  } else {
+    handle = input;
+  }
+
+  const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${encodeURIComponent(handle)}&maxResults=1&key=${API_KEY}`);
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  if (!data.items?.length) throw new Error('Kanal bulunamadı. Farklı bir yazım dene.');
+  return data.items[0].snippet.channelId;
+}
+
+async function getChannel(id) {
+  const res = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,topicDetails&id=${id}&key=${API_KEY}`);
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  if (!data.items?.length) throw new Error('Kanal detayı alınamadı.');
+  return data.items[0];
+}
+
+function buildQuery(ch) {
+  const title = ch.snippet.title || '';
+  const desc = (ch.snippet.description || '').slice(0, 150);
+  const topics = (ch.topicDetails?.topicCategories || []).map(u => u.split('/').pop().replace(/_/g,' '));
+  const words = (title + ' ' + desc).toLowerCase().replace(/[^a-z0-9ğüşıöçğ\s]/g,' ').split(/\s+/).filter(w => w.length > 3).slice(0,4);
+  return [...topics.slice(0,2), ...words].slice(0,4).join(' ');
+}
+
+async function findSimilar(ch) {
+  const query = buildQuery(ch);
+  const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${encodeURIComponent(query)}&maxResults=12&key=${API_KEY}`);
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  const ids = (data.items || []).map(i => i.snippet.channelId).filter(id => id !== ch.id);
+  if (!ids.length) return [];
+  const det = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${ids.join(',')}&key=${API_KEY}`);
+  const detData = await det.json();
+  return detData.items || [];
+}
+
+async function searchSimilar() {
+  const input = document.getElementById('channelInput').value;
+  if (!input.trim()) return;
+
+  hideError();
+  document.getElementById('sourceSection').style.display = 'none';
+  document.getElementById('sourceCard').innerHTML = '';
+  document.getElementById('resultList').innerHTML = '';
+
+  const btn = document.getElementById('searchBtn');
+  btn.disabled = true;
+  btn.textContent = 'Aranıyor...';
+
+  try {
+    setStatus('Kanal aranıyor...');
+    const id = await extractChannelId(input);
+
+    setStatus('Kanal bilgileri alınıyor...');
+    const ch = await getChannel(id);
+
+    document.getElementById('sourceCard').innerHTML = channelCardHTML(ch, true);
+    document.getElementById('sourceSection').style.display = 'block';
+
+    setStatus('Benzer kanallar aranıyor...');
+    const similar = await findSimilar(ch);
+
+    if (!similar.length) {
+      showError('Benzer kanal bulunamadı. Farklı bir kanal dene.');
+    } else {
+      document.getElementById('resultList').innerHTML = similar.map(c => channelCardHTML(c, false)).join('');
+    }
+    setStatus('');
+  } catch (err) {
+    setStatus('');
+    showError(err.message || 'Bilinmeyen bir hata oluştu.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Bul';
+  }
+}
+
+document.getElementById('channelInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') searchSimilar();
+});
+</script>
+</body>
+</html>
